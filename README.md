@@ -1,4 +1,4 @@
-# Quiz App 🎯
+# Quiz Master 🎯
 
 A modern interactive quiz application built with **React.js** and **Tailwind CSS**.  
 The app features multiple-choice questions, real-time score tracking, a countdown timer, and progress visualization.  
