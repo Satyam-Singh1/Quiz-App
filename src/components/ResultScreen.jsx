@@ -1,30 +1,72 @@
 import React from 'react';
-import { Trophy, RotateCcw, CheckCircle, XCircle, Star, Award, TrendingUp, Clock, Target, Brain } from 'lucide-react';
+import { 
+  Trophy, RotateCcw, CheckCircle, XCircle, Star, Award, 
+  TrendingUp, Clock, Target, Brain 
+} from 'lucide-react';
 
-const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highScore, isNewHighScore }) => {
+/**
+ * ResultsScreen Component
+ *
+ * Purpose:
+ * - Shows the final results of the quiz in a clean, user-friendly dashboard style.
+ * - Displays score, percentage, high score, and a breakdown of correct/incorrect answers.
+ * - Includes analytics (accuracy, best score, total Qs).
+ * - Provides an answer-by-answer review so users can learn from mistakes.
+ * - Offers actions like retrying, sharing, or printing results.
+ *
+ * Design Decisions:
+ * - Componentized into logical sections (Main Score Card, Analytics, Answer Review, Share Section).
+ * - Tailwind used heavily for rapid UI styling → consistent theme across the app.
+ * - Lucide icons chosen to improve readability and give immediate visual cues.
+ * - We lean on conditional rendering to highlight correct/incorrect answers
+ *   and to show "New High Score" when relevant.
+ */
+
+const ResultsScreen = ({ 
+  score, 
+  totalQuestions, 
+  userAnswers, 
+  onResetQuiz, 
+  highScore, 
+  isNewHighScore 
+}) => {
+  // Compute the percentage score (rounded for clean display)
   const percentage = Math.round((score / totalQuestions) * 100);
-  
+
+  /**
+   * Decide which "message block" to show based on percentage.
+   * Instead of just showing a raw number, we give context + emotion
+   * (gamification principle: rewards & encouragement improve UX).
+   */
   const getScoreMessage = () => {
-    if (percentage >= 90) return { message: "Outstanding! 🌟", color: "text-yellow-600", icon: Award, bgColor: "bg-yellow-50", borderColor: "border-yellow-200" };
-    if (percentage >= 75) return { message: "Excellent work! 🎉", color: "text-green-600", icon: Trophy, bgColor: "bg-green-50", borderColor: "border-green-200" };
-    if (percentage >= 60) return { message: "Good job! 👍", color: "text-blue-600", icon: TrendingUp, bgColor: "bg-blue-50", borderColor: "border-blue-200" };
-    if (percentage >= 40) return { message: "Not bad! Keep practicing", color: "text-orange-600", icon: TrendingUp, bgColor: "bg-orange-50", borderColor: "border-orange-200" };
+    if (percentage >= 90) 
+      return { message: "Outstanding! 🌟", color: "text-yellow-600", icon: Award, bgColor: "bg-yellow-50", borderColor: "border-yellow-200" };
+    if (percentage >= 75) 
+      return { message: "Excellent work! 🎉", color: "text-green-600", icon: Trophy, bgColor: "bg-green-50", borderColor: "border-green-200" };
+    if (percentage >= 60) 
+      return { message: "Good job! 👍", color: "text-blue-600", icon: TrendingUp, bgColor: "bg-blue-50", borderColor: "border-blue-200" };
+    if (percentage >= 40) 
+      return { message: "Not bad! Keep practicing", color: "text-orange-600", icon: TrendingUp, bgColor: "bg-orange-50", borderColor: "border-orange-200" };
     return { message: "Keep learning! 📚", color: "text-red-600", icon: Brain, bgColor: "bg-red-50", borderColor: "border-red-200" };
   };
 
   const scoreInfo = getScoreMessage();
   const ScoreIcon = scoreInfo.icon;
-  
-  // Calculate additional statistics
+
+  // Quick statistics for summary cards
   const correctAnswers = userAnswers.filter(answer => answer.isCorrect).length;
   const incorrectAnswers = totalQuestions - correctAnswers;
-  const averageTimePerQuestion = 30; // Assuming 30 seconds per question for display
-  
+
+  // NOTE: Hardcoded 30 sec avg for now — could later pull actual timing data.
+  const averageTimePerQuestion = 30;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-950 p-4">
       <div className="max-w-4xl mx-auto">
-        {/* Main Score Card */}
+
+        {/* ====================== MAIN SCORE CARD ====================== */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 mb-8 text-center transform transition-all duration-300 hover:scale-105">
+          {/* Icon + Message */}
           <div className="mb-6">
             <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
               <ScoreIcon className="w-10 h-10 text-white" />
@@ -34,21 +76,21 @@ const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highSc
               <p className={`text-lg font-medium ${scoreInfo.color}`}>{scoreInfo.message}</p>
             </div>
           </div>
-          
-          {/* Main Score Display */}
+
+          {/* Score Display */}
           <div className="mb-6">
             <div className="text-6xl font-bold text-gray-800 mb-2 animate-fadeIn">{score}/{totalQuestions}</div>
             <div className="text-2xl text-gray-600 mb-4">{percentage}% Correct</div>
-            
-            {/* Score Progress Bar */}
+
+            {/* Progress bar for visual feedback */}
             <div className="w-full max-w-xs mx-auto bg-gray-200 rounded-full h-3 mb-4 overflow-hidden">
               <div 
                 className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-1000 ease-out progress-bar"
                 style={{ width: `${percentage}%` }}
               ></div>
             </div>
-            
-            {/* New High Score Badge */}
+
+            {/* Only render high score banner if it’s a new record */}
             {isNewHighScore && (
               <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg animate-bounce">
                 <div className="flex items-center justify-center gap-2 text-yellow-700">
@@ -60,8 +102,8 @@ const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highSc
               </div>
             )}
           </div>
-          
-          {/* Action Buttons */}
+
+          {/* Reset / Try Again action */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={onResetQuiz}
@@ -71,8 +113,8 @@ const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highSc
               Try Again
             </button>
           </div>
-          
-          {/* Quick Stats Summary */}
+
+          {/* Quick stats below main card */}
           <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200">
             <div className="text-center">
               <div className="text-2xl font-bold text-green-600">{correctAnswers}</div>
@@ -89,7 +131,8 @@ const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highSc
           </div>
         </div>
 
-        {/* Performance Analytics */}
+        {/* ====================== PERFORMANCE ANALYTICS ====================== */}
+        {/* Rationale: small KPI cards summarizing quiz journey in numbers. */}
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
             <Target className="w-6 h-6 text-blue-600" />
@@ -97,6 +140,7 @@ const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highSc
           </h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Each card highlights one metric for quick scanning */}
             <div className="text-center p-6 bg-blue-50 rounded-xl border border-blue-100 card-hover">
               <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Brain className="w-6 h-6 text-white" />
@@ -131,7 +175,8 @@ const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highSc
           </div>
         </div>
 
-        {/* Detailed Answer Review */}
+        {/* ====================== DETAILED ANSWER REVIEW ====================== */}
+        {/* This is the real "learning feature" → user can check what went wrong */}
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
             <Trophy className="w-6 h-6 text-blue-600" />
@@ -141,6 +186,8 @@ const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highSc
           <div className="space-y-6">
             {userAnswers.map((answer, index) => {
               const isCorrect = answer.isCorrect;
+
+              // Handle case where user didn’t answer due to timeout
               const userSelectedText = answer.selectedAnswer !== null 
                 ? answer.options[answer.selectedAnswer] 
                 : 'No answer selected (Time expired)';
@@ -153,25 +200,24 @@ const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highSc
                   }`}
                 >
                   <div className="flex items-start gap-4">
+                    {/* Leading circle with correct/incorrect icon */}
                     <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ${
                       isCorrect ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200'
                     }`}>
-                      {isCorrect ? (
-                        <CheckCircle className="w-6 h-6 text-green-600" />
-                      ) : (
-                        <XCircle className="w-6 h-6 text-red-600" />
-                      )}
+                      {isCorrect 
+                        ? <CheckCircle className="w-6 h-6 text-green-600" /> 
+                        : <XCircle className="w-6 h-6 text-red-600" />
+                      }
                     </div>
                     
+                    {/* Question + Answer details */}
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="font-semibold text-gray-800 text-lg">
                           Question {index + 1}
                         </h3>
                         <div className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          isCorrect 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'bg-red-100 text-red-700'
+                          isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                         }`}>
                           {isCorrect ? 'Correct' : 'Incorrect'}
                         </div>
@@ -182,7 +228,7 @@ const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highSc
                       </p>
                       
                       <div className="space-y-3">
-                        {/* User's Answer */}
+                        {/* User’s answer */}
                         <div className={`p-4 rounded-lg border-2 transition-all duration-200 ${
                           isCorrect 
                             ? 'bg-green-50 border-green-200 hover:bg-green-100' 
@@ -201,7 +247,7 @@ const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highSc
                           </div>
                         </div>
                         
-                        {/* Correct Answer (only show if user was wrong) */}
+                        {/* Correct answer (only shown if wrong) */}
                         {!isCorrect && (
                           <div className="p-4 rounded-lg bg-green-50 border-2 border-green-200 hover:bg-green-100 transition-all duration-200">
                             <div className="text-sm font-medium text-gray-700 mb-2">Correct Answer:</div>
@@ -211,7 +257,7 @@ const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highSc
                           </div>
                         )}
                         
-                        {/* All Options for Reference */}
+                        {/* Expandable: view all options */}
                         <div className="mt-4">
                           <details className="group">
                             <summary className="cursor-pointer text-sm text-blue-600 hover:text-blue-700 font-medium list-none">
@@ -249,8 +295,9 @@ const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highSc
               );
             })}
           </div>
-          
-          {/* Share Results Section */}
+
+          {/* ====================== SHARE RESULTS ====================== */}
+          {/* Gamification: encourage sharing achievements, boosts re-engagement */}
           <div className="mt-8 pt-6 border-t border-gray-200 text-center">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Share Your Results</h3>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -277,6 +324,7 @@ const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highSc
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );

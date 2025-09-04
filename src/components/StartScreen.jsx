@@ -2,29 +2,70 @@ import React, { useState } from 'react';
 import { Trophy, Play, Star, Settings, Zap, Brain, Target } from 'lucide-react';
 import { CATEGORIES, DIFFICULTIES } from '../services/apiService';
 
+/**
+ * ============================================
+ * StartScreen Component
+ * ============================================
+ * Acts as the *landing page* of the quiz app.  
+ * Responsibilities:
+ *   - Showcase user stats (score, quizzes played, streak).
+ *   - Allow a quick-start quiz with sensible defaults.
+ *   - Give users the option to configure quiz preferences.
+ * 
+ * Why separate this into its own screen?
+ *   - Keeps the UX flow clean: "start → quiz → results".
+ *   - Decouples setup/config logic from the main quiz controller (`Home.jsx`).
+ *   - Makes this component reusable (we could easily add it to a dashboard later).
+ * 
+ * Design decisions:
+ *   - Defaults: difficulty = easy, questions = 10, no category → reduces friction for casual users.
+ *   - Stats: placed prominently to motivate and show progress.
+ *   - Settings: hidden behind a toggle so the main screen stays clean and beginner-friendly.
+ *   - Visuals: gradient backgrounds + animated blobs/icons → gamified look and feel.
+ */
 const StartScreen = ({ onStartQuiz, userStats }) => { 
-  const [selectedDifficulty, setSelectedDifficulty] = useState('easy');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [showSettings, setShowSettings] = useState(false);
-  const [amount, setAmount] = useState(10);
+  // -------------------------------
+  // Local state: config UI only
+  // -------------------------------
+  // This state is local since it’s just temporary setup values
+  // until the parent (`Home.jsx`) actually starts the quiz.
+  const [selectedDifficulty, setSelectedDifficulty] = useState('easy'); 
+  const [selectedCategory, setSelectedCategory] = useState(''); 
+  const [showSettings, setShowSettings] = useState(false); 
+  const [amount, setAmount] = useState(10); 
 
+  // Kick off quiz with the chosen settings.
+  // We push the config up to `Home.jsx` via callback → keeps StartScreen dumb/simple.
   const handleStartQuiz = () => {
     onStartQuiz(selectedDifficulty, selectedCategory, amount);
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-950">
-      {/* Background Blobs */}
+      
+      {/* ==============================
+          Background Layer (Decoration)
+          ------------------------------
+          Adds animated color blobs behind the main card.
+          Purpose: playful, engaging look without adding noise to logic.
+      =============================== */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-pink-500/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 left-1/3 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl animate-pulse delay-2000"></div>
       </div>
 
-      {/* Main Card */}
+      {/* ==============================
+          Main Card (Core Content)
+          ------------------------------
+          Houses branding, stats, and config UI.
+          Visually separated via glassmorphism.
+      =============================== */}
       <div className="relative z-10 bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl shadow-2xl p-10 max-w-lg w-full text-center">
-        {/* Header */}
+        
+        {/* Branding / Header Section */}
         <div className="mb-10">
+          {/* Logo: Brain = knowledge, Zap = energy/game feel */}
           <div className="relative mb-6">
             <div className="w-28 h-28 bg-gradient-to-tr from-purple-500 via-pink-500 to-blue-500 rounded-full flex items-center justify-center mx-auto shadow-xl">
               <Brain className="w-14 h-14 text-white animate-pulse" />
@@ -41,7 +82,12 @@ const StartScreen = ({ onStartQuiz, userStats }) => {
           </p>
         </div>
 
-        {/* Stats Section */}
+        {/* ==============================
+            Stats Section
+            ------------------------------
+            Small motivators showing personal progress.
+            Why? Encourages replay by highlighting improvement.
+        =============================== */}
         <div className="grid grid-cols-3 gap-4 mb-10">
           {[
             { icon: <Star className="w-5 h-5 text-yellow-400" />, value: `${userStats.highScore}%`, label: 'Best Score' },
@@ -59,7 +105,12 @@ const StartScreen = ({ onStartQuiz, userStats }) => {
           ))}
         </div>
 
-        {/* Quick Start Button */}
+        {/* ==============================
+            Quick Start Button
+            ------------------------------
+            For impatient users → start immediately
+            with defaults. Difficulty shown as a tag.
+        =============================== */}
         <button
           onClick={handleStartQuiz}
           className="relative w-full py-4 px-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl font-bold text-lg hover:from-purple-600 hover:to-pink-600 shadow-xl transform hover:scale-105 transition mb-4"
@@ -73,7 +124,7 @@ const StartScreen = ({ onStartQuiz, userStats }) => {
           </div>
         </button>
 
-        {/* Settings Toggle */}
+        {/* Settings Toggle → collapsible panel */}
         <button
           onClick={() => setShowSettings(!showSettings)}
           className="w-full py-3 px-4 text-white/80 hover:text-white font-medium flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition"
@@ -82,7 +133,12 @@ const StartScreen = ({ onStartQuiz, userStats }) => {
           {showSettings ? 'Hide Settings' : 'Customize Settings'}
         </button>
 
-        {/* Settings Panel */}
+        {/* ==============================
+            Settings Panel
+            ------------------------------
+            Lets users tweak quiz config.
+            Hidden by default → avoids overwhelming new users.
+        =============================== */}
         <div
           className={`transition-all duration-500 ease-in-out overflow-hidden ${
             showSettings ? 'max-h-[1000px] mt-6 opacity-100' : 'max-h-0 opacity-0'
@@ -94,7 +150,7 @@ const StartScreen = ({ onStartQuiz, userStats }) => {
               Quiz Configuration
             </h3>
 
-            {/* Difficulty */}
+            {/* Difficulty Selection */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-white/90 mb-3">
                 Difficulty Level
@@ -116,7 +172,7 @@ const StartScreen = ({ onStartQuiz, userStats }) => {
               </div>
             </div>
 
-            {/* Questions */}
+            {/* Number of Questions */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-white/90 mb-3">
                 Number of Questions
@@ -138,7 +194,7 @@ const StartScreen = ({ onStartQuiz, userStats }) => {
               </div>
             </div>
 
-            {/* Category */}
+            {/* Category Dropdown */}
             <div>
               <label className="block text-sm font-medium text-white/90 mb-3">
                 Category
