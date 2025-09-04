@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import StartScreen from './components/StartScreen';
 import QuizScreen from './components/QuizScreen';
@@ -31,14 +32,10 @@ const Home = () => {
   });
 
   useEffect(() => {
-    const savedHighScore = localStorage.getItem('quizHighScore');
-    const savedTotalQuizzes = localStorage.getItem('totalQuizzesTaken') || 0;
-    const savedBestStreak = localStorage.getItem('bestStreak') || 0;
-    
     setUserStats({
-      highScore: parseInt(savedHighScore) || 0,
-      totalQuizzes: parseInt(savedTotalQuizzes),
-      bestStreak: parseInt(savedBestStreak)
+      highScore: 75, // Mock data
+      totalQuizzes: 12,
+      bestStreak: 5
     });
   }, []);
 
@@ -90,7 +87,6 @@ const Home = () => {
       setError('');
       
       const newTotal = userStats.totalQuizzes + 1;
-      localStorage.setItem('totalQuizzesTaken', newTotal.toString());
       setUserStats(prev => ({ ...prev, totalQuizzes: newTotal }));
       
     } catch (err) {
@@ -174,12 +170,10 @@ const Home = () => {
     const currentStreak = calculateStreak(finalScore, questions.length);
     
     if (percentage > userStats.highScore) {
-      localStorage.setItem('quizHighScore', percentage.toString());
       setUserStats(prev => ({ ...prev, highScore: percentage }));
     }
     
     if (currentStreak > userStats.bestStreak) {
-      localStorage.setItem('bestStreak', currentStreak.toString());
       setUserStats(prev => ({ ...prev, bestStreak: currentStreak }));
     }
     
@@ -254,7 +248,7 @@ const Home = () => {
       
       case 'results':
         return (
-          <ResultsScreen
+          <ResultScreen
             score={score}
             totalQuestions={questions.length}
             userAnswers={userAnswers}
@@ -287,8 +281,8 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen min-w-full items-center justify-center ">
+      <div className=" mx-0">
         {renderScreen()}
       </div>
     </div>
@@ -296,3 +290,6 @@ const Home = () => {
 };
 
 export default Home;
+
+
+  

@@ -17,90 +17,83 @@ const QuizScreen = ({
   const canProceed = selectedAnswer !== null || isAnswerLocked;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-700 via-purple-700 to-pink-600 p-6  backdrop-blur-3xl">
+      <div className="w-full max-w-4xl">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-sm font-medium text-gray-600">
+        <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-xl p-6 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="text-sm font-medium text-white/80">
               Question {currentQuestionIndex + 1} of {totalQuestions}
             </div>
             <div className="flex items-center gap-4">
-              <div className="text-sm font-medium text-gray-600">
+              <div className="text-sm font-medium text-white/80">
                 Score: {score}/{totalQuestions}
               </div>
-              <div className={`flex items-center gap-2 px-3 py-1 rounded-full transition-all duration-300 ${
-                timeLeft <= 10 
-                  ? 'bg-red-100 text-red-700 animate-pulse' 
-                  : timeLeft <= 20 
-                    ? 'bg-yellow-100 text-yellow-700' 
-                    : 'bg-blue-100 text-blue-700'
-              }`}>
+              <div
+                className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold transition-all duration-300 ${
+                  timeLeft <= 10
+                    ? 'bg-red-500/20 text-red-200 animate-pulse'
+                    : timeLeft <= 20
+                    ? 'bg-yellow-500/20 text-yellow-200'
+                    : 'bg-green-500/20 text-green-200'
+                }`}
+              >
                 <Clock className="w-4 h-4" />
-                <span className="font-bold">{timeLeft}s</span>
+                {timeLeft}s
               </div>
             </div>
           </div>
-          
+
           {/* Progress Bar */}
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-500 ease-out"
+          <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
+            <div
+              className="bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 h-2 rounded-full shadow-lg transition-all duration-500 ease-out"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
         </div>
 
         {/* Question Card */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-6 transform transition-all duration-300 animate-slideIn">
+        <div className="backdrop-blur-4xl bg-white/10 border border-white/20 rounded-2xl shadow-xl p-8 mb-8">
           {/* Category Badge */}
           {currentQuestion?.category && (
-            <div className="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full mb-4">
+            <div className="inline-block bg-purple-500/30 text-purple-200 text-xs font-semibold px-4 py-1 rounded-full mb-4">
               {currentQuestion.category}
             </div>
           )}
-          
-          <h2 className="text-2xl font-bold text-gray-800 mb-8 leading-relaxed">
+
+          <h2 className="text-2xl font-bold text-white mb-8 leading-relaxed">
             {currentQuestion?.question}
           </h2>
-          
+
           <div className="space-y-4">
             {currentQuestion?.options.map((option, index) => {
               const isSelected = selectedAnswer === index;
               const isDisabled = isAnswerLocked;
-              
+
               return (
                 <button
                   key={index}
                   onClick={() => onAnswerSelect(index)}
                   disabled={isDisabled}
-                  className={`w-full p-4 text-left rounded-xl border-2 transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
+                  className={`w-full p-4 text-left rounded-xl border-2 transition-all duration-300 transform hover:scale-[1.02] focus:outline-none ${
                     isSelected
-                      ? 'border-blue-500 bg-blue-50 text-blue-700 font-semibold shadow-md'
-                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 hover:shadow-sm'
-                  } ${isDisabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
+                      ? 'border-pink-400 bg-gradient-to-r from-pink-500/30 to-purple-500/30 text-white font-semibold shadow-lg'
+                      : 'border-white/20 bg-white/5 text-white/90 hover:bg-white/10 hover:border-white/40'
+                  } ${isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                      isSelected 
-                        ? 'border-blue-500 bg-blue-500' 
-                        : 'border-gray-300'
-                    }`}>
-                      {isSelected && (
-                        <div className="w-3 h-3 rounded-full bg-white animate-scaleIn"></div>
-                      )}
-                    </div>
-                    <span className="text-lg flex-1">{option}</span>
-                  </div>
+                  {option}
                 </button>
               );
             })}
           </div>
-          
+
           {/* Time Up Message */}
           {isAnswerLocked && selectedAnswer === null && (
-            <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg text-center">
-              <p className="text-red-700 font-medium">⏰ Time's up! Moving to next question...</p>
+            <div className="mt-6 p-4 bg-red-500/20 border border-red-400/30 rounded-lg text-center">
+              <p className="text-red-200 font-medium">
+                ⏰ Time's up! Moving to next question...
+              </p>
             </div>
           )}
         </div>
@@ -110,20 +103,20 @@ const QuizScreen = ({
           <button
             onClick={onNextQuestion}
             disabled={!canProceed}
-            className={`px-8 py-4 rounded-xl font-bold text-lg transform transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
+            className={`px-10 py-4 rounded-xl font-bold text-lg transform transition-all duration-300 focus:outline-none ${
               canProceed
-                ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700 hover:scale-105 shadow-lg'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:scale-105 shadow-xl'
+                : 'bg-gray-500/40 text-gray-300 cursor-not-allowed'
             }`}
           >
-            <span className="flex items-center gap-2">
+            <span className="flex items-center justify-center gap-2">
               {isLastQuestion ? 'Finish Quiz' : 'Next Question'}
               {!isLastQuestion && <ChevronRight className="w-5 h-5" />}
             </span>
           </button>
-          
+
           {!canProceed && (
-            <p className="text-gray-500 text-sm mt-2">
+            <p className="text-gray-300 text-sm mt-2">
               Please select an answer to continue
             </p>
           )}

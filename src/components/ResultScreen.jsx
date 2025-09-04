@@ -21,7 +21,7 @@ const ResultsScreen = ({ score, totalQuestions, userAnswers, onResetQuiz, highSc
   const averageTimePerQuestion = 30; // Assuming 30 seconds per question for display
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-950 p-4">
       <div className="max-w-4xl mx-auto">
         {/* Main Score Card */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 mb-8 text-center transform transition-all duration-300 hover:scale-105">
