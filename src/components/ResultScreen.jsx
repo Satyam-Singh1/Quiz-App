@@ -65,13 +65,13 @@ const ResultsScreen = ({
       <div className="max-w-4xl mx-auto">
 
         {/* ====================== MAIN SCORE CARD ====================== */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 mb-8 text-center transform transition-all duration-300 hover:scale-105">
+        <div className="bg-white rounded-2xl shadow-2xl p-5 pb-3 mb-8 text-center  transform transition-all duration-300 hover:scale-105">
           {/* Icon + Message */}
-          <div className="mb-6">
+          <div className="mb-5">
             <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
               <ScoreIcon className="w-10 h-10 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Quiz Complete!</h1>
+            <h1 className="text-3xl font-bold text-white-800 mb-2">Quiz Complete!</h1>
             <div className={`inline-block px-4 py-2 rounded-full ${scoreInfo.bgColor} ${scoreInfo.borderColor} border-2`}>
               <p className={`text-lg font-medium ${scoreInfo.color}`}>{scoreInfo.message}</p>
             </div>
@@ -85,7 +85,7 @@ const ResultsScreen = ({
             {/* Progress bar for visual feedback */}
             <div className="w-full max-w-xs mx-auto bg-gray-200 rounded-full h-3 mb-4 overflow-hidden">
               <div 
-                className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-1000 ease-out progress-bar"
+                className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-1000 ease-out progress-bar"
                 style={{ width: `${percentage}%` }}
               ></div>
             </div>
@@ -102,20 +102,20 @@ const ResultsScreen = ({
               </div>
             )}
           </div>
-
+            
           {/* Reset / Try Again action */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={onResetQuiz}
               className="px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-bold text-lg hover:from-blue-600 hover:to-indigo-700 transform transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 btn-hover"
             >
-              <RotateCcw className="w-5 h-5 inline mr-2" />
+              <RotateCcw className="w-5 h-5 inline mr-2 " />
               Try Again
             </button>
           </div>
 
           {/* Quick stats below main card */}
-          <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200">
+          <div className="grid grid-cols-3 gap-4 mt-6 pt-2 border-t border-gray-200">
             <div className="text-center">
               <div className="text-2xl font-bold text-green-600">{correctAnswers}</div>
               <div className="text-sm text-gray-600">Correct</div>

@@ -32,11 +32,11 @@ const QuizScreen = ({
   const canProceed = selectedAnswer !== null || isAnswerLocked; // User can proceed if answer selected or time expired
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-700 via-purple-700 to-pink-600 p-6 backdrop-blur-3xl">
+    <div className="mi-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-700 via-purple-700 to-pink-600 p-6 backdrop-blur-3xl">
       <div className="w-full max-w-4xl">
         
         {/* Header Section: Shows question count, score, timer, and progress bar */}
-        <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-xl p-6 mb-8">
+        <div className="backdrop-blur-6xl bg-white/5 border border-white/50 rounded-2xl shadow-xl p-6 mb-5">
           <div className="flex items-center justify-between mb-6">
             {/* Question counter */}
             <div className="text-sm font-medium text-white/80">
@@ -75,16 +75,16 @@ const QuizScreen = ({
         </div>
 
         {/* Question Card */}
-        <div className="backdrop-blur-4xl bg-white/10 border border-white/20 rounded-2xl shadow-xl p-8 mb-8">
+        <div className="backdrop-blur-6xl bg-white/10 border border-white/50 rounded-2xl shadow-xl p-8 mb-8">
           {/* Optional category badge */}
           {currentQuestion?.category && (
-            <div className="inline-block bg-purple-500/30 text-purple-200 text-xs font-semibold px-4 py-1 rounded-full mb-4">
+            <div className="inline-block bg-purple-500/30 text-purple-200 text-xs font-semibold px-4  rounded-full ">
               {currentQuestion.category}
             </div>
           )}
 
           {/* Question text */}
-          <h2 className="text-2xl font-bold text-white mb-8 leading-relaxed">
+          <h2 className="text-2xl font-bold text-white mb-5 leading-relaxed">
             {currentQuestion?.question}
           </h2>
 
@@ -120,6 +120,48 @@ const QuizScreen = ({
             </div>
           )}
         </div>
+            {/* Question indicator dots */}
+          <div className="flex items-center gap-1.5 mx-auto mb-8 justify-center">
+            {Array.from({ length: Math.min(totalQuestions, 10) }, (_, index) => {
+              // Show only first 10 dots for space efficiency
+              if (totalQuestions > 10) {
+                if (index === 9) {
+                  return <span key="ellipsis" className="text-white/50 text-xs">...</span>;
+                }
+                if (currentQuestionIndex >= 10 && index < 8) {
+                  return null;
+                }
+                if (currentQuestionIndex >= 10 && index >= 8) {
+                  const actualIndex = currentQuestionIndex - (9 - index);
+                  return (
+                    <div
+                      key={actualIndex}
+                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                        actualIndex === currentQuestionIndex
+                          ? 'bg-gradient-to-r from-pink-400 to-purple-500 scale-125'
+                          : actualIndex < currentQuestionIndex
+                          ? 'bg-green-400'
+                          : 'bg-white/30'
+                      }`}
+                    />
+                  );
+                }
+              }
+              
+              return (
+                <div
+                  key={index}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    index === currentQuestionIndex
+                      ? 'bg-gradient-to-r from-pink-400 to-purple-500 scale-125'
+                      : index < currentQuestionIndex
+                      ? 'bg-green-400'
+                      : 'bg-white/30'
+                  }`}
+                />
+              );
+            })}
+          </div>
 
         {/* Action Button: Next or Finish */}
         <div className="text-center">
